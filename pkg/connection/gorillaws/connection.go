@@ -458,7 +458,10 @@ func (c *Connection) handleError(err error) bool {
 		c.closeMutex.Lock()
 		c.connCloseError = io.ErrClosedPipe
 		c.closeMutex.Unlock()
-		<-c.connCloseCh
+		select {
+		case <-c.connCloseCh:
+		default:
+		}
 		return true
 	}
 
